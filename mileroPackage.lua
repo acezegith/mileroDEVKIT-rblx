@@ -1,13 +1,13 @@
 -- EDIT THE VARIABLES BELOW
 
-local accessCode = ""
-local hubId = ""
+local accessCode = "" -- The accessCode obtained from the /setup command.
+local hubId = "" -- The hubId obtained from the /setup command.
 
 
 -- DO NOT MODIFY ANYTHING BELOW THIS LINE
 local HttpService = game:GetService("HttpService")
-local API_URL = ""
-local DEV_KIT_VERSION = "v0.5"
+local API_URL = "" -- The API URL
+local DEV_KIT_VERSION = "v0.5" -- Current DEVKIT Version
 
 local module = {}
 
@@ -16,7 +16,7 @@ local module = {}
 -- FETCHING MILERO API TO RETRIEVE USER DATA
 module.getUser = function(userId)
 	local res = HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "/accounts/" .. userId .. "?apiCode=" .. accessCode .. "&userType=roblox")
-	local data = HttpService:JSONDecode(res)
+	local data = HttpService:JSONDecode(res.Body)
 	
 	return data
 end
@@ -24,7 +24,7 @@ end
 -- FETCHING MILERO API TO RETRIEVE HUB DATA
 module.getHub = function()
 	local res = HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "?apiCode=" .. accessCode .. "&userType=roblox")
-	local data = HttpService:JSONDecode(res)
+	local data = HttpService:JSONDecode(res.Body)
 	
 	
 	return data
@@ -40,7 +40,7 @@ module.updateUser = function(userId, userData)
 		},
 		Body = HttpService:JSONEncode(userData),
 	})
-	local data = HttpService:JSONDecode(res)
+	local data = HttpService:JSONDecode(res.Body)
 
 	return data
 	
@@ -49,7 +49,7 @@ end
 -- GET REQUEST TO OBTAIN USER'S GLOBAL ACCOUNT PUBLIC INFORMATION (USED MAINLY TO OBTAIN DATA LINKED TO DISCORD)
 module.getUserAccount = function(userId)
 	local res = HttpService:GetAsync(API_URL .. "/api/users/" .. userId .. "?apiCode=" .. accessCode .. "&userType=roblox")
-	local data = HttpService:JSONDecode(res)
+	local data = HttpService:JSONDecode(res.Body)
 
 	return data
 end
