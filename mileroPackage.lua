@@ -1,33 +1,34 @@
 -- EDIT THE VARIABLES BELOW
 
-local accessCode = "" -- The accessCode obtained from the /setup command.
-local hubId = "" -- The hubId obtained from the /setup command.
+local accessCode = "PROVIDED WITH SETUP"
+local hubId = "PROVIDED WITH SETUP"
 
 
 -- DO NOT MODIFY ANYTHING BELOW THIS LINE
 local HttpService = game:GetService("HttpService")
-local API_URL = "" -- The API URL
-local DEV_KIT_VERSION = "v0.5" -- Current DEVKIT Version
+local API_URL = "http://13.51.43.246:3000"
+local DEV_KIT_VERSION = "v0.6"
 
 local module = {}
 
+-- LOWLEVEL FUNCTIONS
 ----------------------------------------------- USERS & HUBS -----------------------------------------------
 
 -- FETCHING MILERO API TO RETRIEVE USER DATA
-module.getUser = function(userId)
-	local res = HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "/accounts/" .. userId .. "?apiCode=" .. accessCode .. "&userType=roblox")
-	local data = HttpService:JSONDecode(res.Body)
+module.getUser = function(mainUserId)
+	local res = HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "/accounts/" .. mainUserId .. "?apiCode=" .. accessCode .. "&userType=roblox")
+	local data = HttpService:JSONDecode(res)
 	
-	return data
+	return data.info
 end
 
 -- FETCHING MILERO API TO RETRIEVE HUB DATA
 module.getHub = function()
 	local res = HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "?apiCode=" .. accessCode .. "&userType=roblox")
-	local data = HttpService:JSONDecode(res.Body)
+	local data = HttpService:JSONDecode(res)
 	
 	
-	return data
+	return data.info
 end
 
 -- PUT REQUEST TO UPDATE USER IN HUB
@@ -40,7 +41,7 @@ module.updateUser = function(userId, userData)
 		},
 		Body = HttpService:JSONEncode(userData),
 	})
-	local data = HttpService:JSONDecode(res.Body)
+	local data = HttpService:JSONDecode(res)
 
 	return data
 	
@@ -48,10 +49,10 @@ end
 
 -- GET REQUEST TO OBTAIN USER'S GLOBAL ACCOUNT PUBLIC INFORMATION (USED MAINLY TO OBTAIN DATA LINKED TO DISCORD)
 module.getUserAccount = function(userId)
-	local res = HttpService:GetAsync(API_URL .. "/api/users/" .. userId .. "?apiCode=" .. accessCode .. "&userType=roblox")
-	local data = HttpService:JSONDecode(res.Body)
+	local res = HttpService:GetAsync(API_URL .. "/api/users/" .. userId .. "?apiCode=" .. accessCode .. "&reqType=roblox")
+	local data = HttpService:JSONDecode(res)
 
-	return data
+	return data.info
 end
 
 ----------------------------------------------- CLASSES & PURCHASES ----------------------------------------------- 
@@ -79,6 +80,36 @@ module.confirmClassOwnership = function(classId, robloxUserId)
 	end
 	
 	return false
+end
+
+----------------------------------------------- / ----------------------------------------------- 
+
+-- MEDIUM LEVEL FUNCTIONS
+
+module.incrementMiles = function(userid, amount)
+	local success, user = pcall(function()
+		return module.getUser(userid)
+	end)
+
+	if(not success) then
+		return module.updateUser(userid, {miles = tostring(amount), flights = 0})
+	end
+
+	user.miles = user.miles + amount
+	module.updateUser(userid, user)
+end
+
+module.incrementFlights = function(userid, amount)
+	local success, user = pcall(function()
+		return module.getUser(userid)
+	end)
+
+	if(not success) then
+		return module.updateUser(userid, {flights = tostring(amount), miles = 0})
+	end
+
+	user.flights = user.flights + amount
+	module.updateUser(userid, user)
 end
 
 return module
