@@ -25,9 +25,12 @@ module.getUser = function(mainUserId)
 	local scucces, res = pcall(function()
 		return HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "/accounts/" .. mainUserId .. "?apiCode=" .. accessCode .. "&userType=roblox")
 	end)
-	local data = HttpService:JSONDecode(res)
+	local data = false
+	if scucces then
+		data = HttpService:JSONDecode(res).info
+	end
 
-	return data.info
+	return data
 end
 
 -- FETCHING MILERO API TO RETRIEVE HUB DATA
@@ -35,9 +38,12 @@ module.getHub = function()
 	local scucces, res = pcall(function()
 		return HttpService:GetAsync(API_URL .. "/api/hubs/" .. hubId .. "?apiCode=" .. accessCode .. "&userType=roblox")
 	end)
-	local data = HttpService:JSONDecode(res)
+	local data = false
+	if scucces then
+		data = HttpService:JSONDecode(res).info
+	end
 
-	return data.info
+	return data
 end
 
 -- PUT REQUEST TO UPDATE USER IN HUB
@@ -53,8 +59,11 @@ module.updateUser = function(userId, userData)
 		})
 	end)
 	
-	local data = HttpService:JSONDecode(res)
-
+	local data = false
+	if scucces then
+		data = HttpService:JSONDecode(res)
+	end
+	
 	return data
 
 end
@@ -64,10 +73,14 @@ module.getUserAccount = function(userId)
 	local scucces, res = pcall(function()
 		return HttpService:GetAsync(API_URL .. "/api/users/" .. userId .. "?apiCode=" .. accessCode .. "&reqType=roblox")
 	end)
-	local data = HttpService:JSONDecode(res)
+	local data = false
+	if scucces then
+		data = HttpService:JSONDecode(res).info
+	end
 
-	return data.info
+	return data
 end
+
 
 ----------------------------------------------- CLASSES & PURCHASES ----------------------------------------------- 
 
