@@ -13,7 +13,7 @@ local hubId = "PROVIDED WITH SETUP"
 -- DO NOT MODIFY ANYTHING BELOW THIS LINE
 local HttpService = game:GetService("HttpService")
 local API_URL = "http://13.51.43.246:3000"
-local DEV_KIT_VERSION = "v0.6"
+local DEV_KIT_VERSION = "v0.65"
 
 local module = {}
 
@@ -58,12 +58,12 @@ module.updateUser = function(userId, userData)
 			Body = HttpService:JSONEncode(userData),
 		})
 	end)
-	
+
 	local data = false
 	if scucces then
 		data = HttpService:JSONDecode(res)
 	end
-	
+
 	return data
 
 end
@@ -81,7 +81,6 @@ module.getUserAccount = function(userId)
 	return data
 end
 
-
 ----------------------------------------------- CLASSES & PURCHASES ----------------------------------------------- 
 
 -- GET ALL CLASSES PROVIDED BY AIRLINE/HUB
@@ -96,16 +95,16 @@ module.confirmClassOwnership = function(classId, robloxUserId)
 	local shop = module.getHubClasses()
 	local user = module.getUserAccount(robloxUserId)
 	user = user.discord_id
-	
+
 	local owners = shop[classId].owners
 	owners = HttpService:JSONDecode(owners)
-	
+
 	for i, owner in pairs(owners) do
 		if owner == user then
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -113,5 +112,37 @@ end
 
 -- MEDIUM LEVEL FUNCTIONS
 
--- AWAITING V0.9 UPDATE
+module.getUserCards = function(userId)
+
+	local hub = module.getHub()
+
+	local card_tiers = hub.card_tiers
+	local user_cards = hub.accounts[userId].miles_cards
+
+	for i, card in pairs(user_cards) do
+
+		local tier = card_tiers[card.card_tier]
+
+		card.tier_prototype = tier
+
+	end
+
+end
+
+module.getUserCard = function(userId, cardId)
+
+	local hub = module.getHub()
+
+	local card_tiers = hub.card_tiers
+	local user_cards = hub.accounts[userId].miles_cards
+
+	local card = user_cards[cardId]
+
+	local tier = card_tiers[card.card_tier]
+
+	card.tier_prototype = tier
+	
+	return card
+end
+
 return module
