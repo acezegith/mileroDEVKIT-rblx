@@ -9,15 +9,9 @@
 local accessCode = "PROVIDED WITH SETUP"
 local hubId = "PROVIDED WITH SETUP"
 
-
 -- DO NOT MODIFY ANYTHING BELOW THIS LINE
 local HttpService = game:GetService("HttpService")
-local API_URL = "http://13.51.43.246:3000"
-local DEV_KIT_VERSION = "v0.65"
-
--- DO NOT MODIFY ANYTHING BELOW THIS LINE
-local HttpService = game:GetService("HttpService")
-local API_URL = "http://13.51.43.246:3000"
+local API_URL = "https://api.milerorblx.com"
 local DEV_KIT_VERSION = "v0.6"
 
 local module = {}
